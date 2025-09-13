@@ -191,7 +191,7 @@ function showPage(pageId, scrollToId = null) {
 async function ambilData() {
     if (!isLoggedIn) return;
     try {
-        const response = await fetchDataWithAuth('http://localhost:3000/data');
+        const response = await fetchDataWithAuth('/data');
         const data = await response.json();
 
         if (data && data.timestamp) {
@@ -288,7 +288,7 @@ async function loadNotificationSummary() {
     if (!summaryTextElement || !notificationCard) return;
 
     try {
-        const response = await fetchDataWithAuth('http://localhost:3000/notifications/summary');
+        const response = await fetchDataWithAuth('/notifications/summary');
         const summaryData = await response.json();
 
         const summaryKeys = Object.keys(summaryData);
@@ -354,7 +354,7 @@ async function checkForNewNotifications() {
     console.log('1. Mengecek notifikasi baru...'); // Lacak apakah fungsi berjalan
 
     try {
-        const response = await fetchDataWithAuth('http://localhost:3000/notifications/latest');
+        const response = await fetchDataWithAuth('/notifications/latest');
         if (!response.ok) return;
         const latestNotif = await response.json();
 
@@ -387,7 +387,7 @@ async function populateNotificationDropdown() {
     const container = document.getElementById('notification-list-dropdown');
     if(!container) return;
     try {
-        const response = await fetchDataWithAuth('http://localhost:3000/notifications');
+        const response = await fetchDataWithAuth('/notifications');
         const notifications = await response.json();
         container.innerHTML = '';
         if (notifications.length === 0) {
@@ -414,7 +414,7 @@ async function populateNotificationDropdown() {
 async function clearNotifications() {
     if (!confirm('Apakah Anda yakin ingin menghapus semua riwayat notifikasi? Tindakan ini tidak dapat diurungkan.')) return;
     try {
-        await fetchDataWithAuth('http://localhost:3000/notifications', { method: 'DELETE' });
+        await fetchDataWithAuth('/notifications', { method: 'DELETE' });
         loadNotifications();
         populateNotificationDropdown();
     } catch (error) {
@@ -426,7 +426,7 @@ async function checkUnreadCount() {
     if (!isLoggedIn) return;
     const badge = document.getElementById('notification-badge');
     try {
-        const response = await fetchDataWithAuth('http://localhost:3000/notifications/unread-count');
+        const response = await fetchDataWithAuth('/notifications/unread-count');
         const data = await response.json();
         if (data.count > 0) {
             badge.classList.remove('hidden');
@@ -437,7 +437,7 @@ async function checkUnreadCount() {
 }
 async function markNotificationsAsRead() {
     try {
-        await fetchDataWithAuth('http://localhost:3000/notifications/mark-as-read', { method: 'POST' });
+        await fetchDataWithAuth('/notifications/mark-as-read', { method: 'POST' });
         checkUnreadCount();
     } catch (error) { console.error('Gagal menandai notifikasi:', error); }
 }
@@ -560,7 +560,7 @@ async function updateDashboardWithHistory(startDateISO, endDateISO) {
         }
         tableBody.innerHTML = '<tr><td colspan="9">Memuat data...</td></tr>';
         
-        const response = await fetchDataWithAuth(`http://localhost:3000/data/history?startDate=${startDateISO}&endDate=${endDateISO}`);
+        const response = await fetchDataWithAuth(`/data/history?startDate=${startDateISO}&endDate=${endDateISO}`);
         const historyData = await response.json();
 
         if (historyData.length === 0) {
@@ -759,7 +759,7 @@ async function loadNotifications() {
     if (!container) return;
     container.innerHTML = '<p>Memuat notifikasi...</p>';
     try {
-        const response = await fetchDataWithAuth('http://localhost:3000/notifications');
+        const response = await fetchDataWithAuth('/notifications');
         const notifications = await response.json();
         if (notifications.length === 0) {
             container.innerHTML = '<div class="placeholder-content"><h2>Aman!</h2><p>Tidak ada notifikasi atau peringatan saat ini.</p></div>';
@@ -998,7 +998,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = document.getElementById('register-password').value;
             const registrationCode = document.getElementById('register-code').value;
             try {
-                const response = await fetch('http://localhost:3000/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password, registrationCode }) });
+                const response = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password, registrationCode }) });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.message);
                 alert('Registrasi berhasil! Silakan login.');
@@ -1013,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const username = document.getElementById('login-username').value;
             const password = document.getElementById('login-password').value;
             try {
-                const response = await fetch('http://localhost:3000/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) });
+                const response = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.message);
                 localStorage.setItem('token', data.token);
@@ -1060,7 +1060,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelectorAll('.column-filter-controls input:checked').forEach(cb => visibleColumns.push(cb.value));
 
                 // Tambahkan kolom ke URL
-                const downloadUrl = `http://localhost:3000/download-pdf?startDate=${startISO}&endDate=${endISO}&token=${token}&columns=${visibleColumns.join(',')}`;
+                const downloadUrl = `/download-pdf?startDate=${startISO}&endDate=${endISO}&token=${token}&columns=${visibleColumns.join(',')}`;
 
                 // Buka URL di tab baru untuk memicu download
                 window.open(downloadUrl, '_blank');
@@ -1076,7 +1076,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const selection = e.target.value;
             let endpoint = selection === 'alltime' ? '/data' : '/data/today-summary';
             try {
-                const response = await fetchDataWithAuth(`http://localhost:3000${endpoint}`);
+                const response = await fetchDataWithAuth(`${endpoint}`);
                 const data = await response.json();
                 const totalPln = data.totalPlnKwh || 0;
                 const totalTurbin = data.totalTurbineKwh || 0;
