@@ -58,6 +58,8 @@ const io = new Server(httpServer, {
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static('public'));
+
 // --- Konfigurasi MQTT ---
 const mqttBroker = 'mqtt://broker.hivemq.com';
 const mqttTopic = 'sensor/panel/utama';
