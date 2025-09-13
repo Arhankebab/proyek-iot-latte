@@ -428,7 +428,7 @@ app.get('/download-pdf', protect, async (req, res) => {
 });
 
 // --- Jalankan server ---
-const port = 3000;
-httpServer.listen(port, '127.0.0.1', () => {
-  console.log(`🚀 Server API & Socket.IO berjalan di http://127.0.0.1:${port}`);
+const PORT = process.env.PORT || 3000;
+httpServer.listen(PORT, () => {
+  console.log(`🚀 Server berjalan di port ${PORT}`);
 });
