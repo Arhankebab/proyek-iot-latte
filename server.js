@@ -8,6 +8,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+const path = require('path');
 
 const { createServer } = require('http');
 const { Server } = require("socket.io");
@@ -281,7 +282,7 @@ app.delete('/notifications', protect, async (req, res) => {
 });
 
 app.get('/download-pdf', protect, async (req, res) => {
-    const logoPath = 'logo-tim.png'; // Pastikan nama ini sesuai
+    const logoPath = path.join(__dirname, 'public', 'logo-tim.png'); 
     if (!fs.existsSync(logoPath)) {
         return res.status(500).send("Gagal membuat PDF: File logo tidak ditemukan.");
     }
